@@ -42,6 +42,11 @@ class Comments(Resource):
         comment = Comment(post_id=post_id, postedby=postedby,
                           content=args.content).save()
 
+        # Checking if we want to set post.instructorCommented == True
+        current_course = current_user.get_course(course_id)
+        if current_course.canEndorse:
+            post.instructorCommented = True
+
         # Incrementing post comment count, updating date
         post.updatedDate = datetime.datetime.now()
         post.comments += 1
