@@ -56,7 +56,6 @@ class Posts(Resource):
         # filter options: 'instructor', 'me', 'myupvoted'
         filterby = request.args.get('filterby', type=str)
         current_course = current_user.get_course(course_id)
-        print(filterby)
 
         queryParams = {"courseid": course_id}
         # Filter by 'instructor'

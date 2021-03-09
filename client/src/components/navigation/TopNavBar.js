@@ -1,11 +1,26 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import Logo from "../../imgs/inquire-logo.png";
+import Dropdown from "../common/dropdown/Dropdown";
 import SearchBar from "../common/SearchBar";
 import ProfileDropdown from "./ProfileDropdown";
+import Fetch from "../common/requests/Fetch";
 
 const TopNavBar = () => {
+  const { courseid } = useParams();
+  let endpoint = "/api/courses/" + courseid + "/posts?search=";
+
+  const handleOnChange = (e) => {
+    endpoint += e.target.value;
+    console.log(endpoint);
+    const { data, errors, loading } = Fetch({
+      type: "get",
+      endpoint: endpoint,
+    });
+    console.log(data);
+  };
+
   return (
     <Nav>
       <Wrapper>
@@ -14,7 +29,14 @@ const TopNavBar = () => {
         </Link>
       </Wrapper>
       <Wrapper>
-        <SearchBar placeholder="Search for a post or class" />
+        {courseid ? (
+          <SearchBar
+            placeholder="Search for a post"
+            onChange={handleOnChange}
+          />
+        ) : (
+          <Dropdown content={"temp"}></Dropdown>
+        )}
       </Wrapper>
       <Wrapper>
         <ProfileDropdown />
