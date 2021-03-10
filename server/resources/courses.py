@@ -50,6 +50,43 @@ class Courses(Resource):
                                                                        "admin": True, "color": color}}})
         return {"_id": course._id, "course": course.course, "color": color}, 200
 
+    def delete(self):
+        # Parse argument
+        courseid = request.args.get('courseid')
+        # Query for courses matching the courseid
+        query = Course.objects.raw({"_id": courseid})
+        # Error checking even though these shouldn't happen
+        count = query.count()
+        if count > 1:
+            return {"errors": [f"More than one course with id {courseid}"]}, 400
+        elif count == 0:
+            return {"errors": [f"No course with id {courseid}"]}, 400
+        # Get the course to delete
+        course = query.first()
+        # Check permissions
+        if current_user._id != course.instructorID:
+            return {"errors": ["Access denied"]}, 400
+        # Remove the course from the user's course list
+        User.objects.raw({"_id": current_user._id}).update(
+            {"$pull": {"courses": {"course_id": courseid}}})
+
+        # Delete all posts associated with the course
+        post_query = Post.objects.raw({"courseid": courseid})
+        posts = list(post_query)
+        for post in posts:
+            # Delete all comments associated with each post in the course
+            comment_query = Comment.objects.raw({"post_id": post._id})
+            count = comment_query.count()
+            comments = list(comment_query)
+            for comment in comments:
+                post.comments -= 1
+                comment.delete()
+            post.delete()
+
+        # Delete the course itself
+        course.delete()
+        return {"success": "successful delete"}
+
     def validate_post(self, args):
         errors = []
         # if args.university is None:
