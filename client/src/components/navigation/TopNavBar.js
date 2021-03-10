@@ -35,7 +35,7 @@ const TopNavBar = () => {
             onChange={handleOnChange}
           />
         ) : (
-          <Dropdown content={"temp"}></Dropdown>
+          <Dropdown content={"placeholder for now"}></Dropdown>
         )}
       </Wrapper>
       <Wrapper>
