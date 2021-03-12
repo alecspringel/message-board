@@ -7,13 +7,13 @@ import Button from "../common/Button";
 import Comment from "./Comment";
 import LazyFetch from "../common/requests/LazyFetch";
 import { UserContext } from "../context/UserProvider";
-import Fetch from "../common/requests/Fetch";
+import io from "../../services/socketio";
 
 const renderComments = (data) => {
   let ret = [];
   if (data) {
     data.forEach((comment) => {
-      ret.push(<Comment comment={comment} />);
+      ret.push(<Comment comment={comment} key={comment._id} />);
     });
   }
   return ret;
@@ -22,7 +22,8 @@ const renderComments = (data) => {
 const CommentView = ({ classroomName }) => {
   const user = useContext(UserContext);
   const history = useHistory();
-  const [newComments, setNewComments] = useState({ draft: false, created: [] });
+  // Stores comments fetched live from socketio
+  const [newComments, setNewComments] = useState({ draft: false });
   const [commentData, setCommentData] = useState([]);
   const { courseid, postid } = useParams();
   const [highlightedSection, setHighlightedSection] = useState("");
@@ -53,11 +54,49 @@ const CommentView = ({ classroomName }) => {
         },
       });
     }
+    io.emit("join", { room: postid, room_type: "post" });
+    return () => {
+      io.emit("leave", { room: postid });
+    };
   }, [post]);
+
+  useEffect(() => {
+    io.on("Comment/create", (comment) => {
+      console.log(comment);
+      // Ensure the user isn't the one who posted it
+      if (
+        comment &&
+        comment.postedby._id !== user._id &&
+        comment.postedby._id !== user.anonymousId
+      ) {
+        console.log(commentData);
+        setCommentData([
+          ...commentData,
+          <Comment comment={comment} key={comment._id} />,
+        ]);
+      }
+    });
+    io.on("Reply/create", (comment) => {
+      console.log(commentData);
+      console.log(comment, "ws");
+      // Take copy of socketComments and append reply to matching comment (with _id)
+      console.log(commentData);
+      let allComments = [...commentData];
+      console.log(allComments);
+      for (let i in allComments) {
+        console.log(allComments[i], "in for loop");
+        if (allComments[i].props.comment._id === comment._id) {
+          console.log("found a match");
+          allComments[i] = <Comment comment={comment} key={comment._id} />;
+          break;
+        }
+      }
+      setCommentData(allComments);
+    });
+  }, [commentData]);
 
   const draftNewComment = () => {
     setNewComments({
-      ...newComments,
       draft: true,
     });
   };
@@ -65,24 +104,25 @@ const CommentView = ({ classroomName }) => {
   const finishComment = (content) => {
     // If false, clear the draft
     if (!content) {
-      setNewComments({ ...newComments, draft: false });
+      setNewComments({ draft: false });
     } else {
       LazyFetch({
         type: "post",
         endpoint: "/api/posts/" + post._id + "/comments",
         data: { isAnonymous: false, content: content },
         onSuccess: (data) => {
-          console.log("new", data);
-          setNewComments({
-            draft: false,
-            created: newComments.created.concat(<Comment comment={data} />),
-          });
+          setNewComments({ draft: false });
+          setCommentData([
+            ...commentData,
+            <Comment comment={data} key={data._id} />,
+          ]);
         },
       });
     }
   };
+  console.log(commentData);
 
-  let comments = [...commentData, ...newComments.created];
+  let comments = [...commentData];
   if (newComments.draft) {
     const draft = {
       postedby: {
@@ -93,7 +133,12 @@ const CommentView = ({ classroomName }) => {
       replies: [],
     };
     comments.push(
-      <Comment comment={draft} isDraft={true} callback={finishComment} />
+      <Comment
+        comment={draft}
+        isDraft={true}
+        callback={finishComment}
+        key="draft"
+      />
     );
   }
   return (

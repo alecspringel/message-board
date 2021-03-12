@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import Options from "./Options";
 import Post from "./Post";
@@ -7,6 +7,8 @@ import LineWidthImg from "../../imgs/line-width.svg";
 import HollowPinImg from "../../imgs/pin-hollow.svg";
 import { useParams } from "react-router-dom";
 import Fetch from "../common/requests/Fetch";
+import { UserContext } from "../context/UserProvider";
+import io from "../../services/socketio";
 
 const createPost = (post) => {
   return <Post post={post} key={post._id} isCondensed={false} />;
@@ -28,6 +30,26 @@ const generateSections = (data) => {
 };
 
 const PostView = ({ highlightedSection }) => {
+  const user = useContext(UserContext);
+  const [socketPosts, setSocketPosts] = useState([]);
+  useEffect(() => {
+    io.emit("join", { room: courseid, room_type: "course" });
+    io.on("Post/create", (post) => {
+      // Ensure the user isn't the one who posted it
+      console.log(post);
+      if (
+        post &&
+        post.postedby._id !== user._id &&
+        post.postedby._id !== user.anonymousId
+      ) {
+        setSocketPosts([post, ...socketPosts]);
+      }
+    });
+    return () => {
+      io.emit("leave", { room: courseid });
+    };
+  }, []);
+
   const [isCondensed, setCondensedState] = useState(true);
   // Retrieves the courseid from the url parameters
   const { courseid } = useParams();
@@ -48,10 +70,13 @@ const PostView = ({ highlightedSection }) => {
   }
 
   // Load posts from course
-  const { data, errors, loading } = Fetch({
+  let { data, errors, loading } = Fetch({
     type: "get",
     endpoint: endpoint,
   });
+  if (data) {
+    data = [...socketPosts, ...data];
+  }
   let posts = generateSections(data);
 
   return (

@@ -1,0 +1,63 @@
+<!-- test-io-client.html -->
+<script src="https://cdn.socket.io/3.1.1/socket.io.min.js" integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO" crossorigin="anonymous"></script>
+<script>
+
+    function init()
+    {
+        output = document.getElementById("output");
+        testSocket();
+    }
+
+    function testSocket()
+    {
+        var socket = io.connect(null, {port: 5000, rememberTransport: false});
+        socket.on('test', onMessage );
+        socket.on('connect', onConnect );
+        socket.on('disconnect', onDisconnect );
+        // socket.on('connect_error', onError );
+        // socket.on('reconnect_error', onError );
+
+        function onConnect(evt)
+        {
+            writeToScreen("CONNECTED");
+            doSend("Allo?");
+        }
+
+        function onDisconnect(evt)
+        {
+            writeToScreen("DISCONNECTED");
+        }
+
+        function onMessage(data)
+        {
+            console.log(data)
+            //writeToScreen('<span style="color: blue;">RESPONSE: ' + data+'</span>');
+            socket.close();
+        }
+
+        function onError(message)
+        {
+            writeToScreen('<span style="color: red;">ERROR:</span> ' + message);
+        }
+
+        function doSend(message)
+        {
+            writeToScreen("SENT: " + message);
+            socket.emit('test', message);
+        }
+
+        function writeToScreen(message)
+        {
+            var pre = document.createElement("p");
+            pre.style.wordWrap = "break-word";
+            pre.innerHTML = message;
+            output.appendChild(pre);
+        }
+    }
+
+    window.addEventListener("load", init, false);
+</script>
+
+<h2>Socket.io Test</h2>
+
+<div id="output"></div>

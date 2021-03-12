@@ -1,6 +1,7 @@
 from mongo import *
 from flask import Flask, render_template, request, send_from_directory, jsonify
 from flask_restful import Api
+from socketio_app import io, socketio_blueprint
 from flasgger import Swagger
 import config
 import os
@@ -43,6 +44,7 @@ app.config.from_object(config)
 
 # Blueprints
 app.register_blueprint(auth_routes)
+app.register_blueprint(socketio_blueprint)
 
 # Configuring OAuth object
 oauth.init_app(app)
@@ -94,6 +96,9 @@ def handle_404(e):
         return jsonify(message="Resource not found"), 404
     return send_from_directory(app.static_folder, "index.html")
 
+
+# Wrapping flask app in socketio wrapper
+io.init_app(app)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', ssl_context=('/etc/letsencrypt/live/api.inquiremb.com/fullchain.pem',

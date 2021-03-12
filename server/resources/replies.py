@@ -2,6 +2,7 @@ from flask import jsonify
 from flask_restful import Resource, abort, reqparse
 from auth import current_user, permission_layer
 from mongo import *
+from socketio_app import io
 
 
 class Replies(Resource):
@@ -41,8 +42,9 @@ class Replies(Resource):
         # Updating date and saving to database
         post.updatedDate = datetime.datetime.now()
         post.save()
-
-        return self.serialize(reply), 200
+        result = self.serialize(reply)
+        io.emit('Reply/create', self.serialize(comment), room=post_id)
+        return result, 200
 
     def put(self, post_id=None, comment_id=None):
         # Update comment
