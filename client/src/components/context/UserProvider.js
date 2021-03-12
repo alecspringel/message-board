@@ -5,13 +5,14 @@ const UserDispatchContext = createContext(undefined);
 
 /* USER CONTEXT
 {
-  anonymousId: "sdajoifjowij123"
-  email: "alecspringel@gmail.com"
-  first: "Alec"
-  last: "S"
-  picture: "https://googlephotourl.com/user123"
-  _cls: "mongo.User"
-  _id: "019283409158018"
+  "_id": "115987172556120960410",
+  "anonymousId": "7hzfKLnMhjCZn8UtjKJXGJy",
+  "email": "user.email@email.com",
+  "first": "First Name",
+  "last": "Last Name",
+  "picture": "url to the user profile image",
+  "courses": [],
+  "_cls": "mongo.User"
 }
 */
 

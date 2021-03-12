@@ -63,12 +63,13 @@ class Join(Resource):
                     return {"errors": ["You have already joined this class"]}, 400
 
             course_to_add = query.first()
+            color = pick_color(DEFAULT_COLORS)
 
             user_course = UserCourse(
-                course_id=args['course_id'], course_name=course_to_add.course, color=pick_color(DEFAULT_COLORS))
+                course_id=args['course_id'], course_name=course_to_add.course, color=color)
 
             current_user.courses.append(user_course)
 
             current_user.save()
 
-            return {"success": ["Course joined successfully"]}, 200
+            return {"success": ["Course joined successfully"], "course_name": course_to_add.course, "color": color}, 200

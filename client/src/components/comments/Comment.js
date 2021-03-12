@@ -8,12 +8,10 @@ import LazyFetch from "../common/requests/LazyFetch";
 import { UserContext } from "../context/UserProvider";
 import Reaction from "../common/Reaction";
 
-var dummy_reaction_IDs = [];
-
 const Comment = ({ comment, isDraft, callback }) => {
   const { postid } = useParams();
   const [content, setContent] = useState("");
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
 
   const [newReplies, setNewReplies] = useState([]);
   const [isReplying, toggleReply] = useState(false);
@@ -42,7 +40,7 @@ const Comment = ({ comment, isDraft, callback }) => {
           toggleReply(false);
           setNewReplies([
             ...newReplies,
-            <CommentReply reply={data} key={data._id} />,
+            <CommentReply reply={data} key={data._id} postid={postid} />,
           ]);
         },
       });
@@ -58,7 +56,7 @@ const Comment = ({ comment, isDraft, callback }) => {
   let replies = [];
   if (comment.replies && comment.replies.length > 0) {
     comment.replies.forEach((reply) => {
-      replies.push(<CommentReply reply={reply} />);
+      replies.push(<CommentReply reply={reply} postid={postid} />);
     });
   }
   // Insert new replies that were created from state
@@ -66,7 +64,9 @@ const Comment = ({ comment, isDraft, callback }) => {
 
   // If the user clicks reply, insert a drafted reply
   if (isReplying) {
-    replies.push(<CommentReply isDraft submitReply={submitReply} />);
+    replies.push(
+      <CommentReply isDraft submitReply={submitReply} postid={postid} />
+    );
   }
 
   return (
@@ -74,7 +74,6 @@ const Comment = ({ comment, isDraft, callback }) => {
       <CommentContent>{renderContent()}</CommentContent>
       <ReplyContainer>
         <PostMetaContentWrapper className="meta">
-          {/* <UserIcon src="./icons8_note.svg" /> */}
           <UserDescription>
             by {comment.postedby.first + " " + comment.postedby.last}
           </UserDescription>
@@ -102,7 +101,12 @@ const Comment = ({ comment, isDraft, callback }) => {
               </>
             ) : (
               <>
-                <Reaction likes={[...dummy_reaction_IDs]} />
+                <Reaction
+                  reactions={comment.reactions}
+                  type="comment"
+                  id={comment._id}
+                  postid={postid}
+                />
 
                 <ReplyBtn
                   style={{ marginRight: 10, marginLeft: 20 }}

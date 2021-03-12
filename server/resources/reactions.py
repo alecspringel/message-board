@@ -81,5 +81,3 @@ class Reactions(Resource):
             # Save the changes to the comment
             comment.save()
             return {"reactions": {"likes": likes}}, 200
-        else:
-            return {'errors': ["how are you even here"]}, 400

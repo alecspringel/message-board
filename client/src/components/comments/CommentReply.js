@@ -7,7 +7,7 @@ import Reaction from "../common/Reaction";
 
 var dummy_reaction_IDs = [];
 
-const CommentReply = ({ reply, isDraft, submitReply }) => {
+const CommentReply = ({ reply, isDraft, submitReply, postid }) => {
   const user = useContext(UserContext);
   const [draft, setDraft] = useState("");
 
@@ -51,7 +51,12 @@ const CommentReply = ({ reply, isDraft, submitReply }) => {
             </>
           ) : (
             <>
-              <Reaction likes={[...dummy_reaction_IDs]} />
+              <Reaction
+                reactions={reply.reactions}
+                type="reply"
+                id={reply._id}
+                postid={postid}
+              />
             </>
           )}
         </MetaIconWrapper>

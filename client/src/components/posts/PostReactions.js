@@ -3,12 +3,17 @@ import styled from "styled-components";
 import CommentImg from "../../imgs/comment.svg";
 import Reaction from "../common/Reaction";
 
-const PostReactions = ({ likes, comments }) => {
+const PostReactions = ({ post, postid }) => {
   return (
     <>
-      <Reaction likes={likes} />
+      <Reaction
+        reactions={post.reactions}
+        type="post"
+        id={post._id}
+        postid={postid}
+      />
       <Icon src={CommentImg} />
-      <IconValue>{comments}</IconValue>
+      <IconValue>{post.comments}</IconValue>
     </>
   );
 };
