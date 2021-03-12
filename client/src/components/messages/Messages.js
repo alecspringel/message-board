@@ -12,13 +12,13 @@ const Messages = (props) => {
       <PageSubtitle>Proof of concept. Does not function yet.</PageSubtitle>
       <MockupContainer>
         <ContentContainer>
-          <ContentTitle>Format Your Message Bellow</ContentTitle>
+          <ContentTitle>Format Your Message Below</ContentTitle>
           <Input
             style={{
               boxShadow: "0px 1px 4px 2px rgba(0, 0, 0, 0.07)",
               margin: "0 0 1em 0",
             }}
-            placeholder={"Message TItle"}
+            placeholder={"Message Title"}
           />
           <DraftTextArea
             style={{
@@ -26,7 +26,7 @@ const Messages = (props) => {
               border: "1px solid rgba(18, 18, 18, 0.5)",
               margin: "0 0 1em 0",
             }}
-            placeholder={"type your message here..."}
+            placeholder={"Type your message here..."}
             minRows={12}
           />
           <ButtonContainer>

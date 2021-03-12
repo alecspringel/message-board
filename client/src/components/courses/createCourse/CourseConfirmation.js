@@ -36,7 +36,7 @@ const CourseConfirmation = ({ course, close }) => {
           <InputLabel margin="0 0 7px">Access Code</InputLabel>
           <CopyOverlay
             onClick={() => {
-              navigator.clipboard.writeText(course._id);
+              navigator.clipboard.writeText(course.course_id);
               triggerMessage(true);
               setTimeout(() => {
                 triggerMessage(false);
@@ -44,7 +44,11 @@ const CourseConfirmation = ({ course, close }) => {
             }}
           >
             <CopyIcon src={CopyImg} />
-            <Input value={course._id} readOnly style={{ cursor: "pointer" }} />
+            <Input
+              value={course.course_id}
+              readOnly
+              style={{ cursor: "pointer" }}
+            />
             {showMessage && (
               <CopyMessage className="copymessage">Copied!</CopyMessage>
             )}

@@ -27,10 +27,12 @@ const Courses = () => {
   // console.log(currentCourseState);
 
   return (
-    <ScrollDiv>
-      <TopContent courseList={courseList} setCourseList={setCourseList} />
-      <CourseDisplay className="content">{courseList}</CourseDisplay>
-    </ScrollDiv>
+    <WrapAll>
+      <ScrollDiv>
+        <TopContent courseList={courseList} setCourseList={setCourseList} />
+        <WrapDisplay className="content">{courseList}</WrapDisplay>
+      </ScrollDiv>
+    </WrapAll>
   );
 };
 
@@ -39,10 +41,18 @@ export default Courses;
 const ScrollDiv = styled.div`
   width: 100%;
   height: 100%;
-  overflow: auto;
 `;
 
-const CourseDisplay = styled.div`
+const WrapAll = styled.div`
+  width: 100%;
+  height: 85vh;
+  display: flex;
+  flex: 1;
+  overflow: auto;
+  margin: 0;
+`;
+
+const WrapDisplay = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin: 1em 1em 1em 1em;

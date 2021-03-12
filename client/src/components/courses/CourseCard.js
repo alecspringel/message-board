@@ -23,7 +23,15 @@ class CourseCard extends React.Component {
     return (
       <AlignedDiv>
         <ColorDiv color={this.state.courseColor}>
-          <MessageDiv>
+          <MessageDiv
+            onClick={() =>
+              alert(
+                "You clicked the Unread Messages icon for " +
+                  this.props.courseName +
+                  ".\nThis feature is a work in progress."
+              )
+            }
+          >
             <img src={MessagesImg} alt="Messages" width="25em" />
             {this.state.numMsgs > 0 && this.state.numMsgs}
           </MessageDiv>
@@ -35,15 +43,21 @@ class CourseCard extends React.Component {
         <CourseFooter>
           <IconButton
             onClick={() =>
-              console.log("Clicked " + this.props.courseName + " Edit option")
+              alert(
+                "You clicked the Edit option for " +
+                  this.props.courseName +
+                  ".\nThis feature is a work in progress."
+              )
             }
           >
             <img src={EditImg} alt="Create" width="20em" />
           </IconButton>
           <IconButton
             onClick={() =>
-              console.log(
-                "Clicked " + this.props.courseName + " Settings option"
+              alert(
+                "You clicked the Settings option for " +
+                  this.props.courseName +
+                  ".\nThis feature is a work in progress."
               )
             }
           >
@@ -102,6 +116,9 @@ const MessageDiv = styled.p`
   font-size: 1.2em;
   font-weight: 300;
   color: #ffffff;
+  &:hover {
+    opacity: 50%;
+  }
 `;
 
 const CourseInfo = styled(Link)`
@@ -144,6 +161,6 @@ const IconButton = styled.button`
   border-radius: 0.5em;
 
   &:hover {
-    background-color: #efefef;
+    opacity: 50%;
   }
 `;
