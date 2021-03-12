@@ -249,6 +249,7 @@ const PostContent = styled.p`
   margin-top: 10px;
   font-size: 16px;
   color: #979797;
+  word-wrap: break-word;
 `;
 
 const PostMetaContentWrapper = styled.div`

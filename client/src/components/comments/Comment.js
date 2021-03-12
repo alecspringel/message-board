@@ -142,6 +142,7 @@ const CommentContent = styled.p`
   font-size: 16px;
   background-color: #fff;
   border-radius: 5px 5px 0 0;
+  word-wrap: break-word;
 `;
 
 const PostMetaContentWrapper = styled.div`
