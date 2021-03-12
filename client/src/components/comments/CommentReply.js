@@ -80,6 +80,7 @@ const CommentReplyContent = styled.p`
   margin: 0 2.2em 1em 2.2em;
   padding-top: 1em;
   font-size: 16px;
+  word-wrap: break-word;
 `;
 
 const ReplyMetaContentWrapper = styled.div`
