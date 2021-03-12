@@ -22,12 +22,13 @@ app = Flask(__name__, static_url_path="",
             template_folder='../client/build')
 
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.logger.info("test")
 
 
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin',
-                         'http://localhost:3000')
+                         config.CLIENT_URL)
     response.headers.add('Access-Control-Allow-Headers',
                          'Content-Type, Authorization')
     response.headers.add('Access-Control-Allow-Credentials', 'true')

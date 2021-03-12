@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  flask:
+    build: ./server
+    env_file:
+    - ./server/docker_env_file
+    ports:
+      - "5000:5000"
+  react:
+    build: ./client
+    env_file:
+    - ./client/docker_react.env
+    ports:
+      - "80:80"
