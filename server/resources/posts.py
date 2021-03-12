@@ -47,7 +47,8 @@ class Posts(Resource):
 
         # Get the JSON format
         result = self.serialize(post)
-        io.emit('Post/create', result, room=course_id)
+        if not result['isPrivate']:
+            io.emit('Post/create', result, room=course_id)
         return result, 200
 
     def get(self, course_id=None):
@@ -56,36 +57,43 @@ class Posts(Resource):
         page = request.args.get('page', default=0, type=int)
         # filter options: 'instructor', 'me', 'myupvoted'
         filterby = request.args.get('filterby', type=str)
+        # sorby options: 'newest', 'oldest'
+        sortby = request.args.get('sortby', type=str, default="newest")
+
         current_course = current_user.get_course(course_id)
-        print(filterby)
+
+        # -1 sorts newest first
+        sort_date = -1
+        if sortby == "oldest":
+            sort_date = 1
 
         queryParams = {"courseid": course_id}
         # Filter by 'instructor'
         if filterby == 'instructor':
             queryParams["isInstructor"] = True
             query = Post.objects.raw(
-                queryParams).order_by([("isPinned", -1), ("createdDate", -1)]).skip(page * 20).limit(20)
+                queryParams).order_by([("isPinned", -1), ("createdDate", sort_date)])
         # Filter by 'me'
         elif filterby == 'me':
             queryParams["postedby._id"] = {
                 '$in': [current_user._id, current_user.anonymousId]}
             query = Post.objects.raw(
-                queryParams).order_by([("isPinned", -1), ("createdDate", -1)]).skip(page * 20).limit(20)
+                queryParams).order_by([("isPinned", -1), ("createdDate", sort_date)])
         # Filter by 'myupvoted'
         elif filterby == 'myupvoted':
             queryParams["reactions.likes"] = current_user._id
             query = Post.objects.raw(
-                queryParams).order_by([("isPinned", -1), ("createdDate", -1)]).skip(page * 20).limit(20)
+                queryParams).order_by([("isPinned", -1), ("createdDate", sort_date)])
         # If the current user can see private posts and there's no search
         elif current_course.seePrivate and (req is None):
             query = Post.objects.raw(
-                queryParams).order_by([("isPinned", -1), ("createdDate", -1)]).skip(page * 20).limit(20)
+                queryParams).order_by([("isPinned", -1), ("createdDate", sort_date)])
 
         # If the current user can see private posts and there is a search
         elif current_course.seePrivate and (req is not None):
             queryParams['$text'] = {'$search': req}
             query = Post.objects.raw(queryParams).order_by(
-                [("isPinned", -1), ("createdDate", -1)]).skip(page * 20).limit(20)
+                [("isPinned", -1), ("createdDate", sort_date)])
 
         # If the current user cannot see private posts and there is a search
         elif (not current_course.seePrivate) and (req is not None):
@@ -93,14 +101,14 @@ class Posts(Resource):
                 '$in': [current_user._id, current_user.anonymousId]}}]
             queryParams['$text'] = {'$search': req}
             query = Post.objects.raw(queryParams).order_by(
-                [('isPinned', -1), ('createdDate', -1)]).skip(page * 20).limit(20)
+                [('isPinned', -1), ('createdDate', sort_date)])
 
         # If the current user cannot see private posts and there is not a search
         else:
             queryParams["$or"] = [{'isPrivate': False}, {'postedby._id': {
                 '$in': [current_user._id, current_user.anonymousId]}}]
             query = Post.objects.raw(queryParams).order_by(
-                [("isPinned", -1), ("createdDate", -1)]).skip(page * 20).limit(20)
+                [("isPinned", -1), ("createdDate", sort_date)])
 
         # Get the json for all the posts we want to display
         result = [self.serialize(post) for post in query]

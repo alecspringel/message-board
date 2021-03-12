@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import PostReactions from "./PostReactions";
 import Button from "../common/Button";
 import LazyFetch from "../common/requests/LazyFetch";
+import InstructorIcon from "../../imgs/instructor.svg";
 import Checkbox from "../common/Checkbox";
 import { MDBCheckbox } from "mdb-react-ui-kit";
 
@@ -42,6 +43,7 @@ const generatePostContent = (
         />
       ),
       to: null,
+      isInstructor: false,
       isPinned: false,
       picture: user.picture,
       postedby: user.first + " " + user.last,
@@ -75,6 +77,7 @@ const generatePostContent = (
         pathname: "/course/" + post.courseid + "/post/" + post._id,
         state: { post },
       },
+      isInstructor: post.isInstructor,
       isPinned: post.isPinned,
       picture: post.postedby.picture,
       postedby: post.postedby.first + " " + post.postedby.last,
@@ -168,7 +171,20 @@ const Post = ({ post, isCondensed, isDraft }) => {
       {!isCondensed && <hr style={HRStyle} />}
       <PostMetaContentWrapper className="meta">
         {render.picture ? <UserIcon src={render.picture} /> : null}
-        <UserDescription>Posted by {render.postedby}</UserDescription>
+        <NameWrapper>
+          {render.isInstructor && (
+            <span title="Instructor">
+              <img
+                src={InstructorIcon}
+                alt="instructor icon"
+                style={{ height: 20, marginRight: 6 }}
+              />
+            </span>
+          )}
+          <UserDescription isInstructor={render.isInstructor}>
+            Posted by {render.postedby}
+          </UserDescription>
+        </NameWrapper>
         <MetaIconWrapper>
           {render.isAnonymous}
           {render.isPrivate}
@@ -242,6 +258,11 @@ const PostMetaContentWrapper = styled.div`
   height: 100%;
 `;
 
+const NameWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const UserIcon = styled.img`
   float: left;
   width: 30px;
@@ -253,6 +274,7 @@ const UserIcon = styled.img`
 
 const UserDescription = styled.h5`
   user-select: none;
+  color: ${(props) => props.isInstructor && "#FF9900"};
 `;
 
 const MetaIconWrapper = styled.div`

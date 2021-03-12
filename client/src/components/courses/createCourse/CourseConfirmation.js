@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import ShareImg from "../../../imgs/share-white.svg";
 import Button from "../../common/Button";
@@ -7,19 +7,20 @@ import InputLabel from "../../common/InputLabel";
 import CopyImg from "../../../imgs/copy.svg";
 
 const CourseConfirmation = ({ course, close }) => {
+  const [showMessage, triggerMessage] = useState(false);
   return (
     <div className="flex-col align justify">
       <Circle>
         <ShareIcon src={ShareImg} />
       </Circle>
-      <h4 className="margin-t20">ACCESS CODE &amp; LINK</h4>
+      <h4 className="margin-t20">ACCESS CODE</h4>
       <p className="p-small margin-t5">
-        Anyone with the link or access code can join.
+        Anyone with the access code can join.
         <br />
-        Share the link or code below with students.
+        Share the code below with students.
       </p>
       <HighlightedSection className="flex-row">
-        <LeftColumn className="flex-col flex-1">
+        {/* <LeftColumn className="flex-col flex-1">
           <InputLabel margin="0 0 7px">Invite Link</InputLabel>
           <CopyOverlay>
             <CopyIcon src={CopyImg} />
@@ -30,12 +31,23 @@ const CourseConfirmation = ({ course, close }) => {
               readOnly
             />
           </CopyOverlay>
-        </LeftColumn>
+        </LeftColumn> */}
         <RightColumn className="flex-col flex-1">
           <InputLabel margin="0 0 7px">Access Code</InputLabel>
-          <CopyOverlay>
+          <CopyOverlay
+            onClick={() => {
+              navigator.clipboard.writeText(course._id);
+              triggerMessage(true);
+              setTimeout(() => {
+                triggerMessage(false);
+              }, 600);
+            }}
+          >
             <CopyIcon src={CopyImg} />
-            <Input value={course.course_id} readOnly />
+            <Input value={course._id} readOnly style={{ cursor: "pointer" }} />
+            {showMessage && (
+              <CopyMessage className="copymessage">Copied!</CopyMessage>
+            )}
           </CopyOverlay>
         </RightColumn>
       </HighlightedSection>
@@ -82,6 +94,12 @@ const HighlightedSection = styled.div`
 const CopyOverlay = styled.div`
   position: relative;
   cursor: pointer;
+  :hover {
+    img {
+      transition: transform 150ms ease-in-out;
+      transform: scale(1.1);
+    }
+  }
 `;
 
 const CopyIcon = styled.img`
@@ -90,4 +108,16 @@ const CopyIcon = styled.img`
   right: 5px;
   background: white;
   top: 4px;
+`;
+
+const CopyMessage = styled.div`
+  position: absolute;
+  bottom: 120%;
+  bottom: 5.5px;
+
+  right: -15px;
+  right: 35px;
+  background: #e8e8e8;
+  border-radius: 4px;
+  padding: 2px 5px;
 `;
