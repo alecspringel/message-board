@@ -229,6 +229,7 @@ const PostWrapper = styled.div`
 
 const PostTitle = styled.h2`
   /* margin: 1em 0 0.5em 2em; */
+  word-break: break-word;
   font-size: ${(props) => (!props.isCondensed && "18px") || "14px"};
 
   ${(props) =>
