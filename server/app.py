@@ -100,6 +100,9 @@ def handle_404(e):
 # Wrapping flask app in socketio wrapper
 io.init_app(app)
 
+# if __name__ == '__main__':
+#    io.run(app, host='0.0.0.0', ssl_context=('/etc/letsencrypt/live/api.inquiremb.com/fullchain.pem',
+#                                         '/etc/letsencrypt/live/api.inquiremb.com/privkey.pem'))
 if __name__ == '__main__':
     io.run(app, host='0.0.0.0', certfile='/etc/letsencrypt/live/api.inquiremb.com/fullchain.pem',
            keyfile='/etc/letsencrypt/live/api.inquiremb.com/privkey.pem')
