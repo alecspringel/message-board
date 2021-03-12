@@ -28,7 +28,7 @@ const Sidebar = ({ setHighlightedSection, highlightedSection }) => {
   }
 
   // If the name is longer than 18 characters, scale the font size down by this proportion
-  var nameRatio = Math.min(1.0, 18 / classroomName.length);
+  var nameRatio = Math.min(1.0, 12 / classroomName.length);
   //var nameRatio = 1;
 
   return (

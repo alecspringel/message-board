@@ -170,12 +170,6 @@ const Post = ({ post, isCondensed, isDraft }) => {
         {render.picture ? <UserIcon src={render.picture} /> : null}
         <UserDescription>Posted by {render.postedby}</UserDescription>
         <MetaIconWrapper>
-          {/* {isDraft == true ? (
-            <Checkbox labelText={"isAnonymous"} onChange={handleChange} />
-          ) : null}
-          {isDraft == true ? (
-            <Checkbox labelText={"isPrivate"} onChange={handleChange} />
-          ) : null} */}
           {render.isAnonymous}
           {render.isPrivate}
           {render.meta}

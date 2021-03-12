@@ -72,4 +72,6 @@ class Join(Resource):
 
             current_user.save()
 
-            return {"success": ["Course joined successfully"], "course_name": course_to_add.course, "color": color}, 200
+            result = user_course.to_son()
+
+            return {"success": ["Course joined successfully"], "course": result}, 200

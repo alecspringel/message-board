@@ -7,9 +7,9 @@ import CourseInfo from "./createCourse/CourseInfo";
 import CourseCard from "./CourseCard";
 
 const AddNewCourseToList = (newCourse, courseList) => {
-  console.log("Course to add: ", newCourse);
-  console.log("Example from list: ", courseList[0]);
-  console.log("Before: ", "\nCourseList: ", courseList);
+  // console.log("Course to add: ", newCourse);
+  // console.log("Example from list: ", courseList[0]);
+  // console.log("Before: ", "\nCourseList: ", courseList);
 
   let ret = [];
   for (let i = 0; i < courseList.length; i++) {
@@ -35,7 +35,7 @@ const AddNewCourseToList = (newCourse, courseList) => {
     />
   );
 
-  console.log("After: ", "\nCourseList: ", ret);
+  // console.log("After: ", "\nCourseList: ", ret);
   return ret;
 };
 

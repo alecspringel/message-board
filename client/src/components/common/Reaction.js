@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
-import LikeImg from "../../imgs/like.svg";
+import UnlikedImg from "../../imgs/like_grey.svg";
+import LikedImg from "../../imgs/like_blue.svg";
 import { UserContext } from "../context/UserProvider";
 import LazyFetch from "./requests/LazyFetch";
 
@@ -50,7 +51,7 @@ const Reaction = ({ reactions, type, id, postid }) => {
   return (
     <>
       <Icon
-        src={LikeImg}
+        src={reactClicked.liked ? LikedImg : UnlikedImg}
         onClick={handleLike}
         clicked={reactClicked.liked}
         postid={postid}
@@ -70,7 +71,7 @@ const Icon = styled.img`
   margin-left: 20px;
   user-select: none;
   cursor: ${(props) => (props.postid ? "pointer" : "default")};
-  opacity: ${(props) => (!props.clicked && "50%") || "100%"};
+  opacity: ${(props) => (!props.clicked && "100%") || "100%"};
 `;
 
 const IconValue = styled.h5`
